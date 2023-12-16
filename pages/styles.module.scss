@@ -1,0 +1,10 @@
+@use "./compose.module.scss" as *;
+
+@mixin padding {
+	@extend .padding;
+}
+
+.block {
+	background-color: orange;
+	@include padding();
+}
