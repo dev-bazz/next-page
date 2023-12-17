@@ -9,20 +9,39 @@ import {
 	useState,
 } from "react";
 
+interface dataType {
+	"Participant's Name": string;
+	"Employer(Client)": string;
+	"Course Title": string;
+	"Course Date:(MM/DD/YYYY)": string;
+}
 export default function Home() {
-	const [data] = useState<any[]>([
-		{ name: "Clement Bazuaye" },
-		{ name: "Calister Bazuaye" },
-		{ name: "Titi Omosiva osa Bazuaye" },
+	const [data] = useState<dataType[]>([
+		{
+			"Participant's Name": "Clement Bazuaye",
+			"Employer(Client)": "InterSwitch",
+			"Course Title": "Intro to Webdev",
+			"Course Date:(MM/DD/YYYY)": "11/12/2023",
+		},
+		{
+			"Participant's Name": "Jane Doe",
+			"Employer(Client)": "Tech Solutions Inc.",
+			"Course Title": "Advanced JavaScript",
+			"Course Date:(MM/DD/YYYY)": "11/15/2023",
+		},
+		{
+			"Participant's Name": "John Smith",
+			"Employer(Client)": "Data Innovators",
+			"Course Title": "Data Science Fundamentals",
+			"Course Date:(MM/DD/YYYY)": "11/18/2023",
+		},
 	]);
 
 	function createOneCertificate(
 		ctx: CanvasRenderingContext2D | null,
 		image: HTMLImageElement,
 		canvas: HTMLCanvasElement,
-		data: {
-			name: string;
-		},
+		data: dataType,
 	) {
 		ctx?.drawImage(
 			image,
@@ -31,17 +50,43 @@ export default function Home() {
 			canvas?.width || 0,
 			canvas?.height || 0,
 		);
+
+		// Holder Name
 		ctx!.font = `48px monotype corsiva`;
 		ctx!.fillStyle = `#29e`;
 		ctx!.textAlign = "center";
 		ctx!.fillText(
-			`${data.name}`,
+			`${data[`Participant's Name`]}`,
 			canvas.width / 2,
-			canvas.height / 2,
+			canvas.height / 2 - 50,
+		);
+
+		//  Course Title
+		ctx!.font = ` 32px monotype corsiva`;
+		ctx!.fillText(
+			`${data["Course Title"]}`,
+			canvas.width / 2,
+			canvas.height / 2 + 80,
+		);
+
+		// Issued Date
+		ctx!.font = ` 28px monotype corsiva`;
+		ctx!.fillText(
+			`${data["Course Date:(MM/DD/YYYY)"]}`,
+			canvas.width / 2 - 200,
+			canvas.height / 2 + 130,
+		);
+
+		// Employer Name
+		ctx!.font = ` 32px monotype corsiva`;
+		ctx!.fillText(
+			`${data["Course Title"]}`,
+			canvas.width / 2,
+			canvas.height / 2 + 80,
 		);
 	}
 
-	const generateCertificates = async (data: any[]) => {
+	const generateCertificates = async (data: dataType[]) => {
 		// Create a new Instance  of JS Zip
 		const zip = new JSZip();
 		/**
@@ -66,8 +111,10 @@ export default function Home() {
 				await new Promise<void>((resolve, reject) => {
 					image.onload = function () {
 						// Set the dimension of image to the canvas
-						canvas.width = image.width;
-						canvas.height = image.height;
+						canvas.width = 1056;
+						canvas.height = 816;
+
+						console.log(image.width, image.height, image.src);
 						createOneCertificate(ctx, image, canvas, holder);
 						resolve();
 					};
@@ -87,7 +134,7 @@ export default function Home() {
 			);
 
 			// Add Blob to JS Zip Instance
-			zip.file(`${holder.name}.png`, imageBlob);
+			zip.file(`${holder["Participant's Name"]}.png`, imageBlob);
 		}
 
 		// Generating the Zip File
